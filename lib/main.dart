@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'Screens/dashboard.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BytebankApp());
+  // save(Contact(0,'roney',1000)).then((id){
+  //   findAll().then((value) => debugPrint(value.toString()));
+  // });
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class BytebankApp extends StatelessWidget {
+  const BytebankApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override

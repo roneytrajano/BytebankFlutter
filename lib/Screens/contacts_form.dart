@@ -62,7 +62,7 @@ class _ContactsFormState extends State<ContactsForm> {
   }
 
   void onPressed(BuildContext context) {
-    final Contact NewContact = Contact(_inputFullNameController.text,
+    final Contact NewContact = Contact(0,_inputFullNameController.text,
         int.parse(_inputAccountNumberController.text));
     Navigator.pop(context, NewContact);
   }
