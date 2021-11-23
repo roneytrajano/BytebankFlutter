@@ -4,9 +4,14 @@ import 'package:bytebank/database/app_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class ContactsList extends StatelessWidget {
+class ContactsList extends StatefulWidget {
   ContactsList({Key? key}) : super(key: key);
 
+  @override
+  State<ContactsList> createState() => _ContactsListState();
+}
+
+class _ContactsListState extends State<ContactsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +53,7 @@ class ContactsList extends StatelessWidget {
                 );
             }
 
-            return const Text('Erro disconhecido');
+            return const Text('Erro desconhecido');
 
           }),
       floatingActionButton: FloatingActionButton(
@@ -56,10 +61,7 @@ class ContactsList extends StatelessWidget {
           Navigator.of(context)
               .push(MaterialPageRoute(
                 builder: (context) => ContactsForm(),
-              ))
-              .then(
-                (value) => debugPrint('$value'),
-              );
+              )).then((value) => setState(() {}));
         },
         child: const Icon(
           Icons.add,

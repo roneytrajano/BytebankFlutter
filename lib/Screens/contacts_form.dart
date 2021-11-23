@@ -1,4 +1,5 @@
 import 'package:bytebank/Models/Contacts.dart';
+import 'package:bytebank/database/app_database.dart';
 import 'package:flutter/material.dart';
 
 class ContactsForm extends StatefulWidget {
@@ -64,6 +65,7 @@ class _ContactsFormState extends State<ContactsForm> {
   void onPressed(BuildContext context) {
     final Contact NewContact = Contact(0,_inputFullNameController.text,
         int.parse(_inputAccountNumberController.text));
-    Navigator.pop(context, NewContact);
+        save(NewContact);
+    Navigator.pop(context);
   }
 }
