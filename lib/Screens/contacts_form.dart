@@ -1,5 +1,5 @@
 import 'package:bytebank/Models/Contacts.dart';
-import 'package:bytebank/database/app_database.dart';
+import 'package:bytebank/database/dao/contacts_dao.dart';
 import 'package:flutter/material.dart';
 
 class ContactsForm extends StatefulWidget {
@@ -10,6 +10,8 @@ class ContactsForm extends StatefulWidget {
 }
 
 class _ContactsFormState extends State<ContactsForm> {
+  final ContactsDao _contactDao = ContactsDao();
+
   final TextEditingController _inputFullNameController =
       TextEditingController();
 
@@ -25,20 +27,20 @@ class _ContactsFormState extends State<ContactsForm> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _inputFullNameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Full name',
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _inputAccountNumberController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Account number',
               ),
@@ -63,9 +65,9 @@ class _ContactsFormState extends State<ContactsForm> {
   }
 
   void onPressed(BuildContext context) {
-    final Contact NewContact = Contact(0,_inputFullNameController.text,
+    final Contact newContact = Contact(0,_inputFullNameController.text,
         int.parse(_inputAccountNumberController.text));
-        save(NewContact);
+    _contactDao.save(newContact);
     Navigator.pop(context);
   }
 }

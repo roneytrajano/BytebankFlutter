@@ -1,17 +1,19 @@
 import 'package:bytebank/Models/Contacts.dart';
 import 'package:bytebank/Screens/contacts_form.dart';
-import 'package:bytebank/database/app_database.dart';
+import 'package:bytebank/database/dao/contacts_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ContactsList extends StatefulWidget {
-  ContactsList({Key? key}) : super(key: key);
+  const ContactsList({Key? key}) : super(key: key);
 
   @override
   State<ContactsList> createState() => _ContactsListState();
 }
 
 class _ContactsListState extends State<ContactsList> {
+  final ContactsDao _contactDao = ContactsDao();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,8 +22,7 @@ class _ContactsListState extends State<ContactsList> {
       ),
       body: FutureBuilder<List<Contact>>(
           initialData: const [],
-          future: Future.delayed(const Duration(seconds: 1))
-              .then((value) => findAll()),
+          future: _contactDao.findAll(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             EasyLoading.show(status: 'loading...');
             switch (snapshot.connectionState) {
@@ -54,14 +55,14 @@ class _ContactsListState extends State<ContactsList> {
             }
 
             return const Text('Erro desconhecido');
-
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(
-                builder: (context) => ContactsForm(),
-              )).then((value) => setState(() {}));
+                builder: (context) => const ContactsForm(),
+              ))
+              .then((value) => setState(() {}));
         },
         child: const Icon(
           Icons.add,
@@ -91,7 +92,9 @@ class CustomAnimation extends EasyLoadingAnimation {
 }
 
 class _ContactItemCard extends StatelessWidget {
-  const _ContactItemCard({Key? key, required this.contact}) : super(key: key);
+   _ContactItemCard({Key? key, required this.contact}) : super(key: key);
+
+  final ContactsDao _contactDao = ContactsDao();
 
   final Contact contact;
 
@@ -103,8 +106,18 @@ class _ContactItemCard extends StatelessWidget {
           contact.name,
           style: const TextStyle(fontSize: 24.0),
         ),
-        subtitle: Text(contact.accountNumber.toString(),
-            style: const TextStyle(fontSize: 16.0)),
+        subtitle: Text(
+          contact.accountNumber.toString(),
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        leading:
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () {
+
+            _contactDao.deleteContact(contact.id);
+          },
+        ),
       ),
     );
   }
