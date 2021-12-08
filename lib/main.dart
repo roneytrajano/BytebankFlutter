@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'Screens/dashboard.dart';
+import 'http/webclient.dart';
 
 void main() {
+  findAll();
   runApp(const BytebankApp());
+
   // save(Contact(0,'roney',1000)).then((id){
   //   findAll().then((value) => debugPrint(value.toString()));
   // });
