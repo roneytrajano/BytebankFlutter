@@ -67,7 +67,7 @@ class _ContactsFormState extends State<ContactsForm> {
   void onPressed(BuildContext context) {
     final Contact newContact = Contact(0,_inputFullNameController.text,
         int.parse(_inputAccountNumberController.text));
-    _contactDao.save(newContact);
+    _contactDao.saveContact(newContact);
     Navigator.pop(context);
   }
 }

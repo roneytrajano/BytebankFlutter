@@ -1,8 +1,10 @@
+import 'package:bytebank/Components/Progress.dart';
 import 'package:bytebank/Models/Contacts.dart';
 import 'package:bytebank/Screens/contacts_form.dart';
 import 'package:bytebank/database/dao/contacts_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:bytebank/Screens/transaction_form.dart';
 
 class ContactsList extends StatefulWidget {
   const ContactsList({Key? key}) : super(key: key);
@@ -24,23 +26,12 @@ class _ContactsListState extends State<ContactsList> {
           initialData: const [],
           future: _contactDao.findAll(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            EasyLoading.show(status: 'loading...');
+            // EasyLoading.show(status: 'loading...');
             switch (snapshot.connectionState) {
               case ConnectionState.none:
                 break;
               case ConnectionState.waiting:
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.green),
-                      ),
-                      Text('Loading')
-                    ],
-                  ),
-                );
+                return Progress();
               case ConnectionState.active:
                 break;
               case ConnectionState.done:
@@ -48,7 +39,9 @@ class _ContactsListState extends State<ContactsList> {
                 return ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                     final Contact contact = contacts[index];
-                    return _ContactItemCard(contact: contact);
+                    return _ContactItemCard(contact: contact, onClick: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => TransactionForm(contact)));
+                    },);
                   },
                   itemCount: contacts.length,
                 );
@@ -72,36 +65,39 @@ class _ContactsListState extends State<ContactsList> {
   }
 }
 
-class CustomAnimation extends EasyLoadingAnimation {
-  CustomAnimation();
-
-  @override
-  Widget buildWidget(
-    Widget child,
-    AnimationController controller,
-    AlignmentGeometry alignment,
-  ) {
-    return Opacity(
-      opacity: controller.value,
-      child: RotationTransition(
-        turns: controller,
-        child: child,
-      ),
-    );
-  }
-}
+// class CustomAnimation extends EasyLoadingAnimation {
+//   CustomAnimation();
+//
+//   @override
+//   Widget buildWidget(
+//     Widget child,
+//     AnimationController controller,
+//     AlignmentGeometry alignment,
+//   ) {
+//     return Opacity(
+//       opacity: controller.value,
+//       child: RotationTransition(
+//         turns: controller,
+//         child: child,
+//       ),
+//     );
+//   }
+// }
 
 class _ContactItemCard extends StatelessWidget {
-   _ContactItemCard({Key? key, required this.contact}) : super(key: key);
+
+   _ContactItemCard({Key? key, required this.contact, required this.onClick()}) : super(key: key);
 
   final ContactsDao _contactDao = ContactsDao();
 
   final Contact contact;
+  final Function onClick;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: () => onClick(),
         title: Text(
           contact.name,
           style: const TextStyle(fontSize: 24.0),
