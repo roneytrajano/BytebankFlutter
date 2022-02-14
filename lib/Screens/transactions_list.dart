@@ -1,12 +1,12 @@
 import 'package:bytebank/Components/Progress.dart';
 import 'package:bytebank/Components/centered_message.dart';
-import 'package:bytebank/Models/Contacts.dart';
 import 'package:bytebank/Models/Transaction.dart';
-import 'package:bytebank/http/webclient.dart';
+import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:flutter/material.dart';
 
 class TransactionsList extends StatelessWidget {
 
+  final TransactionWebClient _webClient = TransactionWebClient();
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class TransactionsList extends StatelessWidget {
           title: const Text('Transactions'),
         ),
         body: FutureBuilder<List<Transaction>>(
-          future: findAll(),
+          future: _webClient.findAll(),
 
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
 
@@ -28,7 +28,6 @@ class TransactionsList extends StatelessWidget {
                 break;
               case ConnectionState.waiting:
                 return Progress();
-                break;
               case ConnectionState.active:
                 // TODO: Handle this case.
                 break;
