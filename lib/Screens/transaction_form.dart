@@ -1,3 +1,4 @@
+import 'package:bytebank/Components/autentica%C3%A7%C3%A3o_transferencia.dart';
 import 'package:bytebank/Models/Contacts.dart';
 import 'package:bytebank/Models/Transaction.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
@@ -59,10 +60,16 @@ class _TransactionFormState extends State<TransactionForm> {
                   width: double.maxFinite,
                   child: ElevatedButton(
                     child: Text('Transfer'), onPressed: () {
-                      final double? value = double.tryParse(_valueController.text);
-                      final transactionCreated = Transaction(value!, widget.contact);
-                      _webClient.save(transactionCreated);
-                      Navigator.pop(context);
+                      //oq eh exatamente esse contextDialog
+                      showDialog(context: context, builder: (contextDialog) {
+                        return AutenticacaoTransferencia(onConfirm: (String password) {
+                          final double? value = double.tryParse(_valueController.text);
+                          final transactionCreated = Transaction(value!, widget.contact);
+                          _webClient.save(transactionCreated, password);
+                          Navigator.pop(context);
+                        });
+                      });
+
                   },
                   ),
                 ),

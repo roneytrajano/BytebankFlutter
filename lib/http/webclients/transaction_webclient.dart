@@ -12,11 +12,11 @@ class TransactionWebClient{
     return decodedJson.map((dynamic json) => Transaction.fromJson(json)).toList();
   }
 
-  Future<Transaction> save(Transaction transaction) async {
+  Future<Transaction> save(Transaction transaction, String password) async {
     Map<String, dynamic> transactionMap = transaction.toJson();
 
     String jsonInput = jsonEncode(transactionMap);
-    final Response response = await client.post(url, headers: {'Content-type': 'application/json', 'password': '1000',}, body: jsonInput);
+    final Response response = await client.post(url, headers: {'Content-type': 'application/json', 'password': password,}, body: jsonInput);
     return Transaction.fromJson(jsonDecode(response.body));
   }
 }

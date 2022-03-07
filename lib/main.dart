@@ -1,12 +1,6 @@
-import 'package:bytebank/Models/Transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-import 'Models/Contacts.dart';
 import 'Screens/dashboard.dart';
-import 'database/dao/contacts_dao.dart';
-import 'http/webclient.dart';
 
 void main() {
   //save(Transaction(200.0, Contact(0, 'Roney', 2000))).then((value) => print(value));
