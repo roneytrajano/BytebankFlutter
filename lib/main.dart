@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'Screens/contacts_list.dart';
 import 'Screens/dashboard.dart';
+import 'Screens/transactions_list.dart';
 
 void main() {
   //save(Transaction(200.0, Contact(0, 'Roney', 2000))).then((value) => print(value));
@@ -18,9 +21,14 @@ class BytebankApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
         theme: ThemeData.dark(),
-        home: const Dashboard(),
+        initialRoute: '/home',
+        getPages: [
+          GetPage(name: '/home', page: () => const Dashboard()),
+          GetPage(name: '/transfer', page: () => const ContactsList()),
+          GetPage(name: '/TransactionFeed', page: () => TransactionsList()),
+        ],
         // builder: EasyLoading.init(),
     );
   }

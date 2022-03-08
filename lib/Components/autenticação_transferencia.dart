@@ -16,20 +16,29 @@ class AutenticacaoTransferencia extends StatefulWidget {
 class _AutenticacaoTransferenciaState extends State<AutenticacaoTransferencia> {
   TextEditingController _passwordController = TextEditingController();
 
+  bool _validate = false;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Authenticate'),
       content: TextField(
         controller: _passwordController,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          errorText: _validate ? 'Value Can\'t Be Empty' : null,
         ),
         maxLength: 4,
         keyboardType: TextInputType.number,
         obscureText: true,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 64,
           letterSpacing: 24,
 
@@ -45,8 +54,13 @@ class _AutenticacaoTransferenciaState extends State<AutenticacaoTransferencia> {
         TextButton(
           child: const Text('Confirm'),
           onPressed: () {
-            widget.onConfirm(_passwordController.text);
-            Navigator.of(context).pop();
+            setState(() {
+              _passwordController.text.isEmpty ? _validate = true : _validate = false;
+            });
+            if(_validate == false) {
+              widget.onConfirm(_passwordController.text);
+              Navigator.of(context).pop();
+            }
           },
         ),
       ],

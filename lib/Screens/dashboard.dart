@@ -1,8 +1,6 @@
-import 'package:bytebank/Screens/transactions_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'contacts_list.dart';
+import 'package:get/get.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -24,26 +22,26 @@ class Dashboard extends StatelessWidget {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: [
+              children: const [
                 _FeatureItem(
                   'Transfer',
                   Icons.people,
-                    ContactsList()
+                  '/transfer'
                 ),
                 _FeatureItem(
                   'Transaction feed',
                   Icons.description,
-                    TransactionsList()
+                    '/TransactionFeed'
                 ),
                 _FeatureItem(
                     'Exemplo',
                     Icons.description,
-                    ContactsList()
+                    ''
                 ),
                 _FeatureItem(
                     'Exemplo',
                     Icons.description,
-                    ContactsList()
+                    ''
                 )
               ],
             ),
@@ -57,9 +55,9 @@ class Dashboard extends StatelessWidget {
 class _FeatureItem extends StatelessWidget {
   final String _name;
   final IconData _icon;
-  final _class;
+  final String _page;
 
-  const _FeatureItem(this._name, this._icon, this._class);
+  const _FeatureItem(this._name, this._icon, this._page);
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +66,7 @@ class _FeatureItem extends StatelessWidget {
       child: Material(
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => _class));
+            Get.toNamed(_page);
           },
           child: Container(
             color: Colors.green,
