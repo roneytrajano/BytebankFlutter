@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bytebank/Components/autentica%C3%A7%C3%A3o_transferencia.dart';
 import 'package:bytebank/Components/response_dialog.dart';
 import 'package:bytebank/Models/Contacts.dart';
@@ -102,8 +104,15 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   void _save(Transaction transactionCreated, String password, BuildContext context) async {
-   final Transaction transaction = await _webClient.save(transactionCreated, password).catchError((e) {
+   final Transaction transaction = await _webClient.save(transactionCreated, password)
+       .catchError((e) {
+     showDialog(context: context, builder: (contextDialog) => FailureDialog('timeout submitting the transaction'));
+   }, test: (e) => e is TimeoutException)
+       .catchError((e) {
      showDialog(context: context, builder: (contextDialog) => FailureDialog(e.message));
+   }, test: (e) => e is HttpException)
+       .catchError((e) {
+     showDialog(context: context, builder: (contextDialog) => FailureDialog('unknown error'));
    }, test: (e) => e is Exception);
 
     if (transaction != null) {

@@ -18,20 +18,26 @@ class TransactionWebClient{
     String jsonInput = jsonEncode(transactionMap);
     final Response response = await client.post(url, headers: {'Content-type': 'application/json', 'password': password,}, body: jsonInput);
 
+
     if (response.statusCode == 200){
       return Transaction.fromJson(jsonDecode(response.body));
     }
 
-    _throwHttpError(response.statusCode);
+    throw HttpException(_statusCodeResponse[response.statusCode]);
 
-    return Transaction.fromJson(jsonDecode(response.body));
 
   }
-
-  void _throwHttpError(int statusCode) => throw Exception(_statusCodeResponse[statusCode]);
 
   static final Map<int, String> _statusCodeResponse = {
     400 : 'there was an error submitting transaction',
     401 : 'authentication failed',
   };
+}
+
+class HttpException implements Exception{
+  //aqui tem uma exception expecifica que pode ser capturada no nosso error
+  final String? message;
+
+  HttpException(this.message);
+
 }
