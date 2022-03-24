@@ -49,6 +49,7 @@ class HttpException implements Exception{
   //aqui tem uma exception expecifica que pode ser capturada no nosso error
   final String? message;
 
+
   HttpException(this.message);
 
 }
