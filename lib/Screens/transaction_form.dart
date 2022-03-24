@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bytebank/Components/autentica%C3%A7%C3%A3o_transferencia.dart';
+import 'package:bytebank/Components/progress.dart';
 import 'package:bytebank/Components/response_dialog.dart';
 import 'package:bytebank/Models/Contacts.dart';
 import 'package:bytebank/Models/Transaction.dart';
@@ -22,6 +23,7 @@ class _TransactionFormState extends State<TransactionForm> {
   final TransactionWebClient _webClient = TransactionWebClient();
   final String transactionId = Uuid().v4();
   bool _validate = false;
+  bool _seding = false;
 
   @override
   void dispose() {
@@ -31,7 +33,6 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    print('uuid: $transactionId');
     return Scaffold(
       appBar: AppBar(
         title: const Text('New transaction'),
@@ -42,6 +43,13 @@ class _TransactionFormState extends State<TransactionForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Visibility(
+                visible: _seding,
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Progress(),
+                ),
+              ),
               Text(
                 widget.contact.name,
                 style: const TextStyle(
@@ -107,6 +115,9 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   void _save(Transaction transactionCreated, String password, BuildContext context) async {
+    setState(() {
+      _seding = true;
+    });
    final Transaction transaction = await _webClient.save(transactionCreated, password)
        .catchError((e) {
      showDialog(context: context, builder: (contextDialog) => FailureDialog('timeout submitting the transaction'));
@@ -116,7 +127,11 @@ class _TransactionFormState extends State<TransactionForm> {
    }, test: (e) => e is HttpException)
        .catchError((e) {
      showDialog(context: context, builder: (contextDialog) => FailureDialog('unknown error'));
-   }, test: (e) => e is Exception);
+   }, test: (e) => e is Exception).whenComplete(() {
+     setState(() {
+       _seding = false;
+     });
+   });
 
     if (transaction != null) {
       await showDialog(context: context, builder: (contextDialog) => SuccessDialog("sucessful transaction"));
