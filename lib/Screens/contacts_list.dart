@@ -2,6 +2,7 @@ import 'package:bytebank/Components/Progress.dart';
 import 'package:bytebank/Models/Contacts.dart';
 import 'package:bytebank/Screens/contacts_form.dart';
 import 'package:bytebank/database/dao/contacts_dao.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:bytebank/Screens/transaction_form.dart';
@@ -18,6 +19,7 @@ class _ContactsListState extends State<ContactsList> {
 
   @override
   Widget build(BuildContext context) {
+    //FirebaseCrashlytics.instance.crash();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contacts'),
