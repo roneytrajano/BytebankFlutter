@@ -6,11 +6,24 @@ import 'Screens/contacts_list.dart';
 import 'Screens/dashboard.dart';
 import 'Screens/transactions_list.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+  if (kDebugMode) {
+    // Force disable Crashlytics collection while doing every day development.
+    // Temporarily toggle this to true if you want to test crash reporting in your app.
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+  } else {
+    // Handle Crashlytics enabled status when not in Debug,
+    // e.g. allow your users to opt-in to crash reporting.
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    FirebaseCrashlytics.instance.setUserIdentifier('Roney123');
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  }
 
   //save(Transaction(200.0, Contact(0, 'Roney', 2000))).then((value) => print(value));
   //findAll().then((value) => print('new transaction $value'));

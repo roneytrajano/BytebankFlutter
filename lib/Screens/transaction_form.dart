@@ -6,6 +6,7 @@ import 'package:bytebank/Components/response_dialog.dart';
 import 'package:bytebank/Models/Contacts.dart';
 import 'package:bytebank/Models/Transaction.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -120,12 +121,32 @@ class _TransactionFormState extends State<TransactionForm> {
     });
    final Transaction transaction = await _webClient.save(transactionCreated, password)
        .catchError((e) {
+     if (FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled) {
+       // Collection is enabled.
+       // FirebaseCrashlytics.instance.setCustomKey('exception', e.toString());
+       // FirebaseCrashlytics.instance.setCustomKey('http_body', transactionCreated.toString());
+       FirebaseCrashlytics.instance.recordError(e, null);
+     }
      showDialog(context: context, builder: (contextDialog) => FailureDialog('timeout submitting the transaction'));
    }, test: (e) => e is TimeoutException)
        .catchError((e) {
+     if (FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled) {
+       // Collection is enabled.
+       FirebaseCrashlytics.instance.setCustomKey('exception', e.toString());
+       FirebaseCrashlytics.instance.recordError(e, null);
+     }
+
+
      showDialog(context: context, builder: (contextDialog) => FailureDialog(e.message));
    }, test: (e) => e is HttpException)
        .catchError((e) {
+     if (FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled) {
+       // Collection is enabled.
+       FirebaseCrashlytics.instance.setCustomKey('exception', e.toString());
+       FirebaseCrashlytics.instance.setCustomKey('http_code', e.statusCode);
+       FirebaseCrashlytics.instance.recordError(e, null);
+     }
+
      showDialog(context: context, builder: (contextDialog) => FailureDialog('unknown error'));
    }, test: (e) => e is Exception).whenComplete(() {
      setState(() {

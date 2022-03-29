@@ -18,7 +18,7 @@ class TransactionWebClient{
     String jsonInput = jsonEncode(transactionMap);
     final Response response = await client.post(url, headers: {'Content-type': 'application/json', 'password': password,}, body: jsonInput);
     
-    await Future.delayed(Duration(seconds: 10));
+    //await Future.delayed(Duration(seconds: 10));
 
 
     if (response.statusCode == 200){
