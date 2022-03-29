@@ -24,7 +24,7 @@ class _TransactionFormState extends State<TransactionForm> {
   final TransactionWebClient _webClient = TransactionWebClient();
   final String transactionId = Uuid().v4();
   bool _validate = false;
-  bool _seding = false;
+  bool _sending = false;
 
   @override
   void dispose() {
@@ -45,7 +45,7 @@ class _TransactionFormState extends State<TransactionForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Visibility(
-                visible: _seding,
+                visible: _sending,
                 child: const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Progress(),
@@ -117,7 +117,7 @@ class _TransactionFormState extends State<TransactionForm> {
 
   void _save(Transaction transactionCreated, String password, BuildContext context) async {
     setState(() {
-      _seding = true;
+      _sending = true;
     });
    final Transaction transaction = await _webClient.save(transactionCreated, password)
        .catchError((e) {
@@ -127,7 +127,8 @@ class _TransactionFormState extends State<TransactionForm> {
        // FirebaseCrashlytics.instance.setCustomKey('http_body', transactionCreated.toString());
        FirebaseCrashlytics.instance.recordError(e, null);
      }
-     showDialog(context: context, builder: (contextDialog) => FailureDialog('timeout submitting the transaction'));
+
+     _showDialog(context, 'timeout submitting the transaction');
    }, test: (e) => e is TimeoutException)
        .catchError((e) {
      if (FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled) {
@@ -137,7 +138,7 @@ class _TransactionFormState extends State<TransactionForm> {
      }
 
 
-     showDialog(context: context, builder: (contextDialog) => FailureDialog(e.message));
+     _showDialog(context, e.message);
    }, test: (e) => e is HttpException)
        .catchError((e) {
      if (FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled) {
@@ -147,10 +148,10 @@ class _TransactionFormState extends State<TransactionForm> {
        FirebaseCrashlytics.instance.recordError(e, null);
      }
 
-     showDialog(context: context, builder: (contextDialog) => FailureDialog('unknown error'));
+     _showDialog(context, 'unknown error');
    }, test: (e) => e is Exception).whenComplete(() {
      setState(() {
-       _seding = false;
+       _sending = false;
      });
    });
 
@@ -159,5 +160,20 @@ class _TransactionFormState extends State<TransactionForm> {
       Navigator.pop(context);
     }
 
+
+  }
+
+  void _showDialog(BuildContext context, String message) {
+
+    //showDialog(context: context, builder: (contextDialog) => FailureDialog(message));
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 1),
+      // action: SnackBarAction(
+      //   label: 'ACTION',
+      //   onPressed: () { },
+      // ),
+    ));
   }
 }

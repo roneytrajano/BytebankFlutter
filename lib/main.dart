@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,17 @@ void main() async {
 
   //save(Transaction(200.0, Contact(0, 'Roney', 2000))).then((value) => print(value));
   //findAll().then((value) => print('new transaction $value'));
-  runApp(const BytebankApp());
+
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    // The following lines are the same as previously explained in "Handling uncaught errors"
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+    runApp(const BytebankApp());
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
+
+
   // final ContactsDao _contactDao = ContactsDao();
   // _contactDao.saveContact(Contact(0,'roney',1000)).then((id){
   //   findAll().then((value) => debugPrint(value.toString()));
